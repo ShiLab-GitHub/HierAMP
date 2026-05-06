@@ -1,35 +1,35 @@
-# Multi-Scale Conditional Diffusion AMP Generator
+# HierAMP
 
-## 🧬 多尺度条件扩散抗菌肽生成系统
+## 🧬 HierAMP-Diff: Hierarchical Multi-view Conditional Diffusion with Cross-Layer Attention for De Novo Antimicrobial Peptide Generation
 
 基于三层潜在空间（序列 motif → 二级结构 → 物化性质）的条件扩散模型，
 每层执行独立高斯扩散过程，通过双向跨层 Attention 实现层间信息耦合。
 
 ---
 
-## 📋 环境要求
+## 📋 Environment Requirement
 
 - Python ≥ 3.10
 - PyTorch ≥ 2.1.0
 - CUDA ≥ 11.8
 - GPU VRAM ≥ 16 GB
 
-## 🚀 快速开始
+## 🚀 Quick strat
 
-### 1. 环境安装
+### 1. environment install
 
 ```bash
-# 方式一：使用一键脚本
+# Method 1: Use a one-click script
 bash setup_env.sh
 
-# 方式二：手动安装
+# Method 2: Manual Installation
 conda create -n amp_diffusion python=3.10 -y
 conda activate amp_diffusion
 conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y
 pip install -r requirements.txt
 ```
 
-### 2. 准备数据
+### 2. Data prepration
 
 将 `amp_extended_dataset_v2.csv` 放入 `data/` 目录。
 
@@ -50,7 +50,7 @@ pip install -r requirements.txt
 mkdir -p data checkpoints logs results/generated_sequences results/figures
 ```
 
-### 4. 训练模型
+### 4. Train model
 
 ```bash
 python train.py --config configs/default.yaml
@@ -87,7 +87,7 @@ python generate.py \
 
 ---
 
-## 🏗 项目结构
+## 🏗 Project structure
 
 ```
 amp_diffusion/
