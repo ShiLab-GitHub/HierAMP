@@ -1,0 +1,79 @@
+# =============================================================
+# Multi-Scale Conditional Diffusion AMP Generator
+# Default Training Configuration
+# =============================================================
+
+data:
+  csv_path: "data/amp_extended_dataset_v2.csv"
+  max_seq_len: 50
+  min_seq_len: 5
+  vocab_size: 22
+  train_ratio: 0.85
+  val_ratio: 0.10
+  num_workers: 4
+
+diffusion:
+  num_timesteps: 1000
+  beta_schedule: "cosine"
+  beta_start: 0.0001
+  beta_end: 0.02
+  loss_type: "huber"
+  objective: "pred_x0"
+  self_condition: true
+
+layer1:  # Sequence Motif
+  latent_dim: 128
+  hidden_dim: 256
+  num_heads: 8
+  num_layers: 4
+  dropout: 0.1
+  kernel_sizes: [3, 5, 7]
+  motif_embed_dim: 64
+
+layer2:  # Secondary Structure
+  latent_dim: 64
+  hidden_dim: 128
+  num_heads: 4
+  num_layers: 3
+  dropout: 0.1
+  num_ss_types: 2        # H(helix=0), E(sheet=1)，全局单标签
+  ss_embed_dim: 32
+
+layer3:  # Physicochemical Properties
+  latent_dim: 32
+  hidden_dim: 64
+  num_heads: 4
+  num_layers: 2
+  dropout: 0.1
+  num_properties: 8
+
+cross_layer:
+  num_heads: 8
+  hidden_dim: 256
+  dropout: 0.1
+  coupling_strength: 0.5
+  bidirectional: true
+
+train:
+  batch_size: 64
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  num_epochs: 200
+  warmup_steps: 1000
+  grad_clip_norm: 1.0
+  ema_decay: 0.9999
+  save_every: 50
+  eval_every: 10
+  log_every: 100
+  checkpoint_dir: "checkpoints"
+  log_dir: "logs"
+  device: "cuda"
+  seed: 42
+  use_wandb: false
+  project_name: "amp_diffusion"
+
+generate:
+  num_samples: 100
+  guidance_scale: 3.0
+  temperature: 1.0
+  output_dir: "results/generated_sequences"
