@@ -31,7 +31,7 @@ pip install -r requirements.txt
 
 ### 2. Data prepration
 
-Place 'HierANP dataset.csv' in the 'data/' directory.
+Place 'HierAMP dataset.csv' in the 'data/' directory.
 
 Data Format：
 
