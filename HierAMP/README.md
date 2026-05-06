@@ -2,8 +2,8 @@
 
 ## 🧬 HierAMP-Diff: Hierarchical Multi-view Conditional Diffusion with Cross-Layer Attention for De Novo Antimicrobial Peptide Generation
 
-基于三层潜在空间（序列 motif → 二级结构 → 物化性质）的条件扩散模型，
-每层执行独立高斯扩散过程，通过双向跨层 Attention 实现层间信息耦合。
+A conditional diffusion model based on a three-layer latent space (sequence motifs → secondary structure → physical properties),
+where each layer performs an independent Gaussian diffusion process, and inter-layer information coupling is achieved through bidirectional cross-layer attention.
 
 ---
 
@@ -31,20 +31,20 @@ pip install -r requirements.txt
 
 ### 2. Data prepration
 
-将 `amp_extended_dataset_v2.csv` 放入 `data/` 目录。
+Place 'HierANP dataset.csv' in the 'data/' directory.
 
-数据格式：
+Data Format：
 
-| 列名 | 类型 | 说明 | 示例 |
+| List | Type | Note | Example |
 |------|------|------|------|
-| name | string | 肽段名称/ID | AMP_001 |
-| seq | string | 氨基酸序列 | KWKLFKKIGAVLKVL |
-| source | string | 来源物种/数据库 | Human / APD3 |
-| type | string | AMP 功能类型 | antibacterial |
-| second_structure | string | 全局二级结构类型（H=α-helix，E=β-sheet） | H |
-| variant_type | string | 变体类型 | wild_type / mutant |
+| name | string | Peptide name/ID | AMP_001 |
+| seq | string | Amino acid sequence | KWKLFKKIGAVLKVL |
+| source | string | Source species/database | Human / APD3 |
+| type | string | AMP function type | antibacterial |
+| second_structure | string | Global second-level structure types（H=α-helix，E=β-sheet） | H |
+| variant_type | string | Variant type | wild_type / mutant |
 
-### 3. 创建目录
+### 3. Create a directory
 
 ```bash
 mkdir -p data checkpoints logs results/generated_sequences results/figures
@@ -56,10 +56,10 @@ mkdir -p data checkpoints logs results/generated_sequences results/figures
 python train.py --config configs/default.yaml
 ```
 
-### 5. 生成序列
+### 5. Generate sequence
 
 ```bash
-# 无条件生成
+# Generate unconditionally
 python generate.py \
   --checkpoint checkpoints/best_model.pt \
   --num_samples 100 \
@@ -67,15 +67,15 @@ python generate.py \
   --guidance_scale 3.0 \
   --output_dir results/unconditional
 
-# 固定二级结构生成
+# Generation of fixed secondary structures
 python generate.py \
   --checkpoint checkpoints/best_model.pt \
   --fix_structure \
-  --target_ss "HHHHHHHHHCCCCCEEEEEE" \
+  --target_ss "H" \
   --num_samples 50 \
   --output_dir results/fixed_structure
 
-# 目标性质约束生成
+# Generation of objective constraints
 python generate.py \
   --checkpoint checkpoints/best_model.pt \
   --target_charge 5.0 \
@@ -92,36 +92,36 @@ python generate.py \
 ```
 amp_diffusion/
 ├── configs/
-│   └── default.yaml          # 默认配置
+│   └── default.yaml           # Default configuration
 ├── data/
 │   ├── __init__.py
-│   ├── dataset.py             # 数据集加载与预处理
-│   └── amp_extended_dataset_v2.csv  # 数据文件（需自备）
+│   ├── dataset.py             # Dataset loading and pre-processing
+│   └── HierAMP dataset.csv    # Data files
 ├── models/
 │   ├── __init__.py
-│   ├── layers.py              # 基础组件（时间嵌入、跨层 Attention）
-│   ├── encoders.py            # 三层编码器/解码器
-│   ├── diffusion.py           # 高斯扩散核心
-│   └── multi_scale_diffusion.py  # ⭐ 多尺度扩散主模型
-├── checkpoints/               # 模型检查点
-├── logs/                      # 训练日志
+│   ├── layers.py              # Core components (temporal embedding, cross-layer attention)
+│   ├── encoders.py            # Three-layer encoder/decoder
+│   ├── diffusion.py           # Gaussian diffusion kernel
+│   └── multi_scale_diffusion.py  # ⭐ Multi-scale diffusion master model
+├── checkpoints/               # Model checkpoints
+├── logs/                      # Training log
 ├── results/
 │   ├── generated_sequences/
 │   └── figures/
-├── config.py                  # 全局配置
-├── train.py                   # 训练脚本
-├── generate.py                # 生成脚本
-├── utils.py                   # 工具函数
+├── config.py                  # Global settings
+├── train.py                   # Training script
+├── generate.py                # Generate script
+├── utils.py                   # Utility functions
 ├── requirements.txt
 ├── setup_env.sh
 └── README.md
 ```
 
-## 🔑 核心架构
+## 🔑 Core architecture
 
-1. **三层独立扩散**: 每层拥有独立的 GaussianDiffusion 实例和 DenoiseNet
-2. **跨层耦合**: 通过 BidirectionalCrossLayerAttention 实现三对双向注意力（含可学习门控）
-3. **层级控制**: `generate()` 支持 `fix_layer1/2/3` 参数，可固定任意层的潜在表示
+1. **Three-layer independent diffusion**: Each layer has its own instance of GaussianDiffusion and DenoiseNet
+2. **Cross-layer coupling**: Implementation of three pairs of bidirectional attention (including learnable gating) via BidirectionalCrossLayerAttention
+3. **Hierarchical control**: `generate()` supports the `fix_layer1/2/3` parameter, which allows you to fix the latent representations of any layer
 
 ---
 
