@@ -112,6 +112,8 @@ amp_diffusion/
 ├── train.py                   # Training script
 ├── generate.py                # Generate script
 ├── utils.py                   # Utility functions
+├── ablation_layers.py
+├── compare_experient.py
 ├── requirements.txt
 ├── setup_env.sh
 └── README.md
